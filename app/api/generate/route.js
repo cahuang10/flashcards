@@ -12,13 +12,15 @@ Only respond with valid JSON. Return in the following JSON format { "flashcards"
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req) {
+
   // Parse the request body
   const { text } = await req.json();
   if (!text) {
     return new Response("User text is required", {
       status: 400,
+
     });
-  }
+
 
   // Make the completion request using Groq
   const result = await groq.chat.completions.create({
@@ -34,4 +36,5 @@ export async function POST(req) {
   const flashcards = JSON.parse(result.choices[0]?.message?.content || "{}");
   return NextResponse.json(flashcards.flashcards);
 }
+
 
