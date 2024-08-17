@@ -18,8 +18,8 @@ export async function POST(req) {
   if (!text) {
     return new Response("User text is required", {
       status: 400,
-
     });
+  }
 
 
   // Make the completion request using Groq
@@ -36,5 +36,3 @@ export async function POST(req) {
   const flashcards = JSON.parse(result.choices[0]?.message?.content || "{}");
   return NextResponse.json(flashcards.flashcards);
 }
-
-
