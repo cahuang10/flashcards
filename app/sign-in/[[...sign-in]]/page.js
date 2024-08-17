@@ -1,4 +1,3 @@
-"use clinet";
 import { SignIn } from "@clerk/nextjs";
 import {
   AppBar,
