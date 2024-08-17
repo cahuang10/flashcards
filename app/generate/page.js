@@ -33,11 +33,8 @@ export default function Generate() {
   //const router = useRouter();
 
   const handleSumit = async () => {
-    fetch("api/generate", { method: "POST", body: text })
-      .then((res) => {
-        console.log(res);
-        res.json();
-      })
+    fetch("api/generate", { method: "POST", body: JSON.stringify({text })})
+      .then((res) => res.json())
       .then((data) => setFlashcards(data));
   };
 
@@ -48,17 +45,17 @@ export default function Generate() {
     }));
   };
 
-  const handleOpen = () => {
+  const handleOpenDialog = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(flase);
+  const handleCloseDialog = () => {
+    setOpen(false);
   };
 
   const saveFlashcards = async () => {
     if (!name) {
-      alert("Please enter a namme");
+      alert("Please enter a name");
     }
 
     const batch = writeBatch(db);
@@ -119,7 +116,7 @@ export default function Generate() {
           >
             Submit
           </Button>
-        </Paper>
+        </Paper> 
       </Box>
       {flashcards.length > 0 && (
         <Box sx={{ mt: 4 }}>
@@ -170,8 +167,6 @@ export default function Generate() {
                               {flashcard.front}
                             </Typography>
                           </div>
-                        </div>
-                        <div>
                           <div>
                             <Typography variant="h5" component="div">
                               {flashcard.back}
@@ -196,7 +191,7 @@ export default function Generate() {
           </Box>
         </Box>
       )}
-      <Dialog open={dialogOpen} onClose={handleClose}>
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Save Flashcard Set</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -214,7 +209,7 @@ export default function Generate() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button onClick={saveFlashcards} color="primary">
             Save
           </Button>
