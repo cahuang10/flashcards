@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import getStripe from "@/utils/get-stripe";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
@@ -85,7 +86,6 @@ export default function Home() {
           Get started
         </Button>
       </Box>
-
       <Box sx={{ my: 6, textAlign: "center" }}>
         <Typography variant="h4"> Features</Typography>
         <Grid container spacing={4}>

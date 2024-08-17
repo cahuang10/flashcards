@@ -1,3 +1,4 @@
+"use clinet";
 import { SignUp } from "@clerk/nextjs";
 import {
   AppBar,
