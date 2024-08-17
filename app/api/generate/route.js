@@ -5,8 +5,7 @@ const systemPrompt = `Generate a flashcard with a question or term on one side a
 explanation on the other. Ensure the content is clear, concise, and focused on key concepts. Tailor the flashcards to 
 the user's specified subject or topic, emphasizing areas that require reinforcement.
 
-
-return in the following JSON format { "flashcards":[{"front": str, "back": str}],}
+Only respond with valid JSON. Return in the following JSON format { "flashcards":[{"front": str, "back": str}],}
 `;
 
 // Initialize the Groq API client
@@ -14,9 +13,9 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req) {
   // Parse the request body
-  const { text, systemPrompt } = await req.json();
-  if (!systemPrompt || !text) {
-    return new Response("System prompt and user text are required", {
+  const { text } = await req.json();
+  if (!text) {
+    return new Response("User text is required", {
       status: 400,
     });
   }
@@ -29,8 +28,10 @@ export async function POST(req) {
     ],
     model: "llama3-8b-8192",
   });
-
+  console.log("Raw result:", result.choices[0]?.message?.content );
+  
   // Parse and return the flashcards JSON format
   const flashcards = JSON.parse(result.choices[0]?.message?.content || "{}");
-  return NextResponse.json({ flashcards: flashcards.flashcards });
+  return NextResponse.json(flashcards.flashcards);
 }
+

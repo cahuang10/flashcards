@@ -18,10 +18,11 @@ import {
   DialogActions,
   dialogOpen,
 } from "@mui/material";
-import { collection, writeBatch } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { use, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import { db } from "@/firebase"; 
+import { doc, collection, getDoc, writeBatch, setDoc } from "firebase/firestore";
 
 export default function Generate() {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -29,7 +30,7 @@ export default function Generate() {
   const [flipped, setFlipped] = useState([]);
   const [text, setText] = useState("");
   const [name, setName] = useState("");
-  const [open, setOpen] = useState(false);
+  const [dialogOpen, setOpen] = useState(false);
   //const router = useRouter();
 
   const handleSumit = async () => {
