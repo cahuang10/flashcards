@@ -11,6 +11,7 @@ import {
   Typography,
   Box,
   Grid,
+  Link,
 } from "@mui/material";
 import Head from "next/head";
 
@@ -44,7 +45,7 @@ export default function Home() {
     <Container maxWidth="100vw">
       <Head>
         <title>flashcard</title>
-        <meta name="description" content="Create flashcard from your text" />
+        <meta name="flashcard-description" content="Create flashcard from your text" />
       </Head>
       <AppBar position="static">
         <Toolbar>
@@ -81,6 +82,7 @@ export default function Home() {
         }}
       >
         <Typography variant="h2">Welcome to Flashcard</Typography>
+
         <Typography variant="h5">The best way to create flashcard</Typography>
         <Button variant="contained" color="primary" sx={{ mt: 2 }} href="/generate">
           Get started
