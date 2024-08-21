@@ -43,7 +43,6 @@ export async function POST(req) {
     });
   }
 
-
   // Make the completion request using Groq
   const result = await groq.chat.completions.create({
     messages: [
@@ -53,7 +52,7 @@ export async function POST(req) {
     model: "llama3-8b-8192",
   });
   console.log("Raw result:", result.choices[0]?.message?.content );
-  
+
   // Parse and return the flashcards JSON format
   const flashcards = JSON.parse(result.choices[0]?.message?.content || "{}");
   return NextResponse.json(flashcards.flashcards);
