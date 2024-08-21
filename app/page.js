@@ -49,7 +49,7 @@ export default function Home() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" style={{ flexGrow: 1 }}>
-            Flashcard Sas
+            AI Flashcard Generator
           </Typography>
           <SignedOut>
             <Button
@@ -82,7 +82,7 @@ export default function Home() {
       >
         <Typography variant="h2">Welcome to Flashcard</Typography>
         <Typography variant="h5">The best way to create flashcard</Typography>
-        <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+        <Button variant="contained" color="primary" sx={{ mt: 2 }} href="/generate">
           Get started
         </Button>
       </Box>
