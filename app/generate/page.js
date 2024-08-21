@@ -18,10 +18,17 @@ import {
   DialogActions,
   dialogOpen,
 } from "@mui/material";
-import { collection, writeBatch } from "firebase/firestore";
+import { db } from "@/firebase";
 import { useRouter } from "next/router";
 import { use, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import {
+  doc,
+  collection,
+  getDoc,
+  writeBatch,
+  setDoc,
+} from "firebase/firestore";
 
 export default function Generate() {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -29,15 +36,12 @@ export default function Generate() {
   const [flipped, setFlipped] = useState([]);
   const [text, setText] = useState("");
   const [name, setName] = useState("");
-  const [open, setOpen] = useState(false);
+  const [dialogOpen, setOpen] = useState(false);
   //const router = useRouter();
 
   const handleSumit = async () => {
-    fetch("api/generate", { method: "POST", body: text })
-      .then((res) => {
-        console.log(res);
-        res.json();
-      })
+    fetch("api/generate", { method: "POST", body: JSON.stringify({ text }) })
+      .then((res) => res.json())
       .then((data) => setFlashcards(data));
   };
 
@@ -48,44 +52,48 @@ export default function Generate() {
     }));
   };
 
-  const handleOpen = () => {
+  const handleOpenDialog = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(flase);
+  const handleCloseDialog = () => {
+    setOpen(false);
   };
 
   const saveFlashcards = async () => {
     if (!name) {
-      alert("Please enter a namme");
+      alert("Please enter a name");
+      return;
     }
 
-    const batch = writeBatch(db);
-    const userDocRef = doc(collection(db, "users"), user.id);
-    const docSnap = await getDoc(userDocRef);
+    console.log(flashcards);
 
-    if (docSnap.exist()) {
-      const collections = docSnap.data().flashcards || [];
-      if (collections.find((f) => f.name === name)) {
-        alert("It already exist");
-        return;
+    try {
+      const userDocRef = doc(db, "users", user.id);
+      const userDocSnap = await getDoc(userDocRef);
+
+      const batch = writeBatch(db);
+
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        const updatedSets = [...(userData.flashcardsSets || []), { name }];
+        batch.update(userDocRef, { flashcardsSets: updatedSets });
       } else {
-        collections.push({ name });
-        batch.set(userDocRef, { flashcards: collections }, { merge: true });
+        batch.set(userDocRef, { flashcardsSets: [{ name }] });
       }
-    } else {
-      batch.set(userDocRef, { flashcards: [{ name }] });
-    }
 
-    const colRef = collection(userDocRef, name);
-    flashcards.forEach((flashcard) => {
-      const cardDocRef = doc(colRef);
-      batch.set(cardDocRef, flashcard);
-    });
-    await batch.commit();
-    handleClose();
-    router.push("/flashcards");
+      // Correct reference to the subcollection and document
+      const setDocRef = doc(db, "users", user.id, "flashcardSets", name);
+      batch.set(setDocRef, { flashcards });
+
+      await batch.commit();
+      alert("Flashcards saved");
+      handleCloseDialog();
+      setName(""); // Ensure this clears the input field
+    } catch (error) {
+      console.error("Error saving flashcards: ", error);
+      alert("An error occurred while saving flashcards");
+    }
   };
 
   return (
@@ -170,8 +178,6 @@ export default function Generate() {
                               {flashcard.front}
                             </Typography>
                           </div>
-                        </div>
-                        <div>
                           <div>
                             <Typography variant="h5" component="div">
                               {flashcard.back}
@@ -196,7 +202,7 @@ export default function Generate() {
           </Box>
         </Box>
       )}
-      <Dialog open={dialogOpen} onClose={handleClose}>
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Save Flashcard Set</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -214,7 +220,7 @@ export default function Generate() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button onClick={saveFlashcards} color="primary">
             Save
           </Button>
