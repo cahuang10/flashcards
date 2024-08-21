@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import Head from "next/head";
 export default function Home() {
+<<<<<<< HEAD
   const handleSubmit = async () => {
     const checkoutSession = await fetch("/api/checkout_session", {
       method: "POST",
@@ -38,15 +39,45 @@ export default function Home() {
       console.warn(error.message);
     }
   };
+=======
+
+  const handleSubmit = async () => {
+    const checkoutSession = await fetch("/api/checkout", {
+      method: "POST",
+      headers: {
+        origin: 'http://localhost:3000',
+      },
+    })
+
+    const checkoutSessionJson = await checkoutSession.json()
+    if (checkoutSession.statusCode === 500){
+      console.error(checkoutSession.message)
+      return
+    }
+    
+    const stripe = await getStripe()
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: checkoutSessionJson.id
+    })
+
+    if (error){
+      console.warn(error.message)
+    }
+  }
+>>>>>>> 77ad8a2dad4f3a69661700b015f27776d7a04188
 
   return (
     <Container maxWidth="100vw">
       <Head>
         <title>flashcard</title>
+<<<<<<< HEAD
         <meta
           name="flashcard-description"
           content="Create flashcard from your text"
         />
+=======
+        <meta name="flashcard-description" content="Create flashcard from your text" />
+>>>>>>> 77ad8a2dad4f3a69661700b015f27776d7a04188
       </Head>
       <AppBar position="static">
         <Toolbar>
@@ -85,12 +116,16 @@ export default function Home() {
         <Typography variant="h2">Welcome to Flashcard</Typography>
 
         <Typography variant="h5">The best way to create flashcard</Typography>
+<<<<<<< HEAD
         <Button
           variant="contained"
           color="primary"
           sx={{ mt: 2 }}
           href="/generate"
         >
+=======
+        <Button variant="contained" color="primary" sx={{ mt: 2 }} href="/generate">
+>>>>>>> 77ad8a2dad4f3a69661700b015f27776d7a04188
           Get started
         </Button>
       </Box>
@@ -131,12 +166,16 @@ export default function Home() {
               <Typography>
                 get access to unlimited flashcard, with priority support
               </Typography>
+<<<<<<< HEAD
               <Button
                 variant={"contained"}
                 color={"primary"}
                 sx={{ mt: 2 }}
                 onClick={handleSubmit}
               >
+=======
+              <Button variant={"contained"} color={"primary"} sx={{ mt: 2 }} onClick={handleSubmit}>
+>>>>>>> 77ad8a2dad4f3a69661700b015f27776d7a04188
                 Choose Pro
               </Button>
             </Box>
