@@ -155,9 +155,10 @@ export default function Home() {
               <Typography>
                 get access to our basic features and limited storage
               </Typography>
+
               <Button
-                variant={"contained"}
-                color={"primary"}
+                variant="contained"
+                color="primary"
                 sx={{ mt: 2 }}
                 onClick={handleSubmit}
               >
