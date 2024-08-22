@@ -14,9 +14,33 @@ import {
   Link,
 } from "@mui/material";
 import Head from "next/head";
+import { useState } from "react";
 export default function Home() {
   const handleSubmit = async () => {
     const checkoutSession = await fetch("/api/checkout_session", {
+      method: "POST",
+      headers: {
+        origin: "http://localhost:3000",
+      },
+    });
+
+    const checkoutSessionJson = await checkoutSession.json();
+    if (checkoutSession.statusCode === 500) {
+      console.error(checkoutSession.message);
+      return;
+    }
+
+    const stripe = await getStripe();
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: checkoutSessionJson.id,
+    });
+
+    if (error) {
+      console.warn(error.message);
+    }
+  };
+  const handleSubmit2 = async () => {
+    const checkoutSession = await fetch("/api/checkout_session_basic", {
       method: "POST",
       headers: {
         origin: "http://localhost:3000",
@@ -160,7 +184,7 @@ export default function Home() {
                 variant="contained"
                 color="primary"
                 sx={{ mt: 2 }}
-                onClick={handleSubmit}
+                onClick={handleSubmit2}
               >
                 Choose Basic
               </Button>

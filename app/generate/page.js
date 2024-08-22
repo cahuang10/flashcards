@@ -22,24 +22,10 @@ import {
   Toolbar,
   IconButton,
 } from "@mui/material";
-<<<<<<< HEAD
-import { db } from "@/firebase";
-import { useRouter } from "next/router";
-import { use, useState } from "react";
-import { useUser } from "@clerk/nextjs";
-import {
-  doc,
-  collection,
-  getDoc,
-  writeBatch,
-  setDoc,
-} from "firebase/firestore";
-=======
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { doc, getDoc, writeBatch, setDoc } from "firebase/firestore";
 import { db } from "@/firebase";
->>>>>>> 77ad8a2dad4f3a69661700b015f27776d7a04188
 
 export default function Generate() {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -48,14 +34,6 @@ export default function Generate() {
   const [text, setText] = useState("");
   const [name, setName] = useState("");
   const [dialogOpen, setOpen] = useState(false);
-<<<<<<< HEAD
-  //const router = useRouter();
-
-  const handleSumit = async () => {
-    fetch("api/generate", { method: "POST", body: JSON.stringify({ text }) })
-      .then((res) => res.json())
-      .then((data) => setFlashcards(data));
-=======
   const [loading, setLoading] = useState(false);
 
   const theme = useTheme();
@@ -75,7 +53,6 @@ export default function Generate() {
     } finally {
       setLoading(false);
     }
->>>>>>> 77ad8a2dad4f3a69661700b015f27776d7a04188
   };
 
   const handleCardClick = (id) => {
@@ -99,19 +76,10 @@ export default function Generate() {
       return;
     }
 
-<<<<<<< HEAD
-    console.log(flashcards);
-
     try {
       const userDocRef = doc(db, "users", user.id);
       const userDocSnap = await getDoc(userDocRef);
 
-=======
-    try {
-      const userDocRef = doc(db, "users", user.id);
-      const userDocSnap = await getDoc(userDocRef);
-
->>>>>>> 77ad8a2dad4f3a69661700b015f27776d7a04188
       const batch = writeBatch(db);
 
       if (userDocSnap.exists()) {
@@ -122,21 +90,13 @@ export default function Generate() {
         batch.set(userDocRef, { flashcardsSets: [{ name }] });
       }
 
-<<<<<<< HEAD
-      // Correct reference to the subcollection and document
-=======
->>>>>>> 77ad8a2dad4f3a69661700b015f27776d7a04188
       const setDocRef = doc(db, "users", user.id, "flashcardSets", name);
       batch.set(setDocRef, { flashcards });
 
       await batch.commit();
       alert("Flashcards saved");
       handleCloseDialog();
-<<<<<<< HEAD
-      setName(""); // Ensure this clears the input field
-=======
       setName("");
->>>>>>> 77ad8a2dad4f3a69661700b015f27776d7a04188
     } catch (error) {
       console.error("Error saving flashcards: ", error);
       alert("An error occurred while saving flashcards");
@@ -152,77 +112,7 @@ export default function Generate() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-          >
-<<<<<<< HEAD
-            Submit
-          </Button>
-        </Paper>
-      </Box>
-      {flashcards.length > 0 && (
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h5">Flashcard Preview</Typography>
-          <Grid container spacing={3}>
-            {flashcards.map((flashcard, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card>
-                  <CardActionArea
-                    onClick={() => {
-                      handleCardClick(index);
-                    }}
-                  >
-                    <CardContent>
-                      <Box
-                        sx={{
-                          perspective: "1000px",
-                          "& > div": {
-                            transition: "transform 0.6s",
-                            transformStyle: "preserve-3d",
-                            position: "relative",
-                            width: "100%",
-                            height: "200px",
-                            boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
-                            transform: flipped[index]
-                              ? "rotateY(180deg)"
-                              : "rotateY(0deg)",
-                          },
-                          "& > div > div": {
-                            position: "absolute",
-                            width: "100%",
-                            height: "200px",
-                            backfaceVisibility: "hidden",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            padding: 2,
-                            boxSizing: "border-box",
-                          },
-                          "& > div > div:nth-of-type(2)": {
-                            transform: "rotateY(180deg)",
-                          },
-                        }}
-                      >
-                        <div>
-                          <div>
-                            <Typography variant="h5" component="div">
-                              {flashcard.front}
-                            </Typography>
-                          </div>
-                          <div>
-                            <Typography variant="h5" component="div">
-                              {flashcard.back}
-                            </Typography>
-                          </div>
-                        </div>
-                      </Box>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-          <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
-=======
-          </IconButton>
+          ></IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Flashcard Generator
           </Typography>
@@ -247,9 +137,8 @@ export default function Generate() {
               p: 4,
               width: "100%",
               backgroundColor: theme.palette.background.default,
-              boxShadow: 4
+              boxShadow: 4,
             }}
-            
           >
             <TextField
               value={text}
@@ -261,7 +150,6 @@ export default function Generate() {
               variant="outlined"
               sx={{ mb: 2 }}
             />
->>>>>>> 77ad8a2dad4f3a69661700b015f27776d7a04188
             <Button
               variant="contained"
               color="primary"
@@ -397,46 +285,15 @@ export default function Generate() {
               onClick={saveFlashcards}
               sx={{
                 "&:hover": {
-                  backgroundColor: theme.palette.primary.dark
-                }
+                  backgroundColor: theme.palette.primary.dark,
+                },
               }}
             >
               Save
             </Button>
-<<<<<<< HEAD
-          </Box>
-        </Box>
-      )}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Save Flashcard Set</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Please enter a name for your flashcard set.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Set Name"
-            type="text"
-            fullWidth
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            variant="outlined"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={saveFlashcards} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
-=======
           </DialogActions>
         </Dialog>
       </Container>
     </>
->>>>>>> 77ad8a2dad4f3a69661700b015f27776d7a04188
   );
 }

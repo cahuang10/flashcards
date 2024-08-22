@@ -1,12 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import getStripe from "@/utils/get-stripe";
 import { useSearchParams } from "next/navigation";
-import { CircularProgress, Typography } from "@mui/material";
+import { CircularProgress, Typography, Container, Box } from "@mui/material";
 
 const ResultPage = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const session_id = searchParams.get("session_id");
 
@@ -22,6 +19,7 @@ const ResultPage = () => {
         const res = await fetch(
           `/api/checkout_session?session_id=${session_id}`
         );
+        console.log(res);
         const sessionData = await res.json();
         if (res.ok) {
           setSession(sessionData);
@@ -29,13 +27,15 @@ const ResultPage = () => {
           setError(sessionData.error);
         }
       } catch (err) {
-        setError("an error occurred");
+        console.log(err);
+        setError("An error occurred");
       } finally {
         setLoading(false);
       }
     };
     fetchCheckoutSession();
   }, [session_id]);
+
   if (loading) {
     return (
       <Container
@@ -50,6 +50,7 @@ const ResultPage = () => {
       </Container>
     );
   }
+
   if (error) {
     return (
       <Container
@@ -63,6 +64,7 @@ const ResultPage = () => {
       </Container>
     );
   }
+
   return (
     <Container
       maxWidth="100vw"
@@ -71,22 +73,29 @@ const ResultPage = () => {
         mt: 4,
       }}
     >
-      session.payment_status === "paid" ? (
-      <Typography variant="h6">Thank you for purchasing</Typography>
-      <Box sx={{ mt: 22 }}>
-        <Typography variant="h6"> Session ID: {session_id}</Typography>
-        <Typography variant="body1">
-          We have received your payment. You will receive an email with details
-          shortly.
-        </Typography>
-      </Box>
-      ) : (<Typography variant="h6">Payment failed</Typography>
-      <Box sx={{ mt: 22 }}>
-        <Typography variant="body1">
-          Your payment was not successful. Please try again.
-        </Typography>
-      </Box>
-      )
+      {session.payment_status === "paid" ? (
+        <Box>
+          <Typography variant="h6">Thank you for purchasing</Typography>
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="h6">Session ID: {session_id}</Typography>
+            <Typography variant="body1">
+              We have received your payment. You will receive an email with
+              details shortly.
+            </Typography>
+          </Box>
+        </Box>
+      ) : (
+        <Box>
+          <Typography variant="h6">Payment failed</Typography>
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body1">
+              Your payment was not successful. Please try again.
+            </Typography>
+          </Box>
+        </Box>
+      )}
     </Container>
   );
 };
+
+export default ResultPage;
